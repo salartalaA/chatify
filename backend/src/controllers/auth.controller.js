@@ -19,16 +19,16 @@ export const signup = async (req, res) => {
         .json({ message: "Password must be at least 6 characters" });
     }
 
-    // check if email is valid: regex
-
+    // check if emailis valid: regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email))
+    if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
+    }
 
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "Email already exists" });
 
+    // 123456 => $dnjasdkasj_?dmsakmk
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -39,13 +39,12 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      // before CR
+      // before CR:
       // generateToken(newUser._id, res);
       // await newUser.save();
 
-      // after CR
+      // after CR:
       // Persist user first, then issue auth cookie
-
       const savedUser = await newUser.save();
       generateToken(savedUser._id, res);
 
@@ -78,7 +77,7 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.json(400).json({ message: "Email and password are required" });
+    return res.status(400).json({ message: "Email and password are required" });
   }
 
   try {
@@ -99,12 +98,12 @@ export const login = async (req, res) => {
       profilePic: user.profilePic,
     });
   } catch (error) {
-    console.error("Error in login controller", error);
+    console.error("Error in login controller:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const logout = async (_, res) => {
+export const logout = (_, res) => {
   res.cookie("jwt", "", { maxAge: 0 });
   res.status(200).json({ message: "Logged out successfully" });
 };
@@ -125,7 +124,7 @@ export const updateProfile = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).json({ updatedUser });
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in update profile:", error);
     res.status(500).json({ message: "Internal server error" });
