@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/salartalaA/chatify/issues"
   },
-  "homepage": "https://github.com/salartalaA/chatify#readme"
+  "homepage": "https://github.com/salartalaA/chatify#readme",
+  "dependencies": {
+    "vite": "^7.1.5"
+  }
 }
