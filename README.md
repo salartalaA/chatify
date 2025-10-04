@@ -7,7 +7,7 @@ Includes **typing indicators**, profile selection, and **email notifications** v
 ## 🔗 Demo  
 [Live Demo](#) | [GitHub](#)  
 
-![Screenshot](src/assets/screenshot.png)  
+![Screenshot](frontend/src/assets/screenshot.png)  
 
 ## ⚡ Installation  
 ```bash
