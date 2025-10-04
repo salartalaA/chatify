@@ -7,7 +7,7 @@ Includes **typing indicators**, profile selection, and **email notifications** v
 
 ## 🔗 Demo
 
-[Live Demo](#) | [GitHub](#)
+[Live Demo](https://chatify-klts.onrender.com/)
 
 ![Screenshot](frontend/src/assets/screenshot.png)
 
