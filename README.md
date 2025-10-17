@@ -45,3 +45,5 @@ npm run dev -> run this command in both frontend and backend folders
 - Socket.IO ⚡
 - Resend API 📧
 - DaisyUI 🎨
+
+## Thanks Codesistency Youtube channel
