@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
-import useKeyboardSound from "../hooks/useKeyboardSound.js";
-import { useChatStore } from "../store/useChatStore.js";
+import { useEffect, useRef, useState } from "react";
+import useKeyboardSound from "../hooks/useKeyboardSound";
+import { useChatStore } from "../store/useChatStore";
 import toast from "react-hot-toast";
 import { ImageIcon, SendIcon, XIcon } from "lucide-react";
 
@@ -11,17 +11,31 @@ function MessageInput() {
 
   const fileInputRef = useRef(null);
 
-  const { sendMessage, isSoundEnabled } = useChatStore();
+  const {
+    sendMessage,
+    editMessage,
+    editingMessage,
+    setEditingMessage,
+    isSoundEnabled,
+  } = useChatStore();
+
+  // set new text for update
+  useEffect(() => {
+    if (editingMessage) setText(editingMessage.text);
+  }, [editingMessage]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
     if (isSoundEnabled) playRandomKeyStrokeSound();
 
-    sendMessage({
-      text: text.trim(),
-      image: imagePreview,
-    });
+    if (editingMessage) {
+      editMessage(editingMessage._id, text);
+      setEditingMessage(null);
+    } else {
+      sendMessage({ text: text.trim(), image: imagePreview });
+    }
+
     setText("");
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -30,10 +44,9 @@ function MessageInput() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an Image file");
+      toast.error("Please select an image file");
       return;
     }
-
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
@@ -76,10 +89,9 @@ function MessageInput() {
             setText(e.target.value);
             isSoundEnabled && playRandomKeyStrokeSound();
           }}
-          className="flex-1 bg-slate-900/50 border-slate-700/50 rounded-lg py-2 px-4"
           placeholder="Type your message..."
+          className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4"
         />
-
         <input
           type="file"
           accept="image/*"
@@ -87,17 +99,15 @@ function MessageInput() {
           onChange={handleImageChange}
           className="hidden"
         />
-
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className={`bg-slate-800/50 text-slate-400 hover:text-slate-400 rounded-lg px-4 transition-colors ${
+          className={`bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-lg px-4 transition-colors ${
             imagePreview ? "text-cyan-500" : ""
           }`}
         >
           <ImageIcon className="w-5 h-5" />
         </button>
-
         <button
           type="submit"
           disabled={!text.trim() && !imagePreview}
